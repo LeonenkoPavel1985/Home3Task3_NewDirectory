@@ -4,28 +4,25 @@ import java.io.File;
 import java.nio.file.Files;
 import java.util.Scanner;
 
+import static java.nio.file.Files.copy;
+
 public class CopyThread extends Thread {
+    private File source;
+    private  File destination;
+
+    public CopyThread (String existingPath, String newPath) {
+        this.source = new  File(existingPath);
+        this.destination = new File(newPath);
+    }
+    @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
-        String source;
-        String destination;
-
-        System.out.println("Enter the path to the directory where the file is located:");
-        source = scanner.next();
-
-        File scrDir = new File(source);
-
-        System.out.println("Enter a new path to copy the file to:");
-        destination = scanner.next();
-
-        File destDir = new File(destination);
-
-        try {
-           Files.copy(scrDir.toPath(), destDir.toPath());
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println("The file has been copied.");
+        File[] files = source.listFiles();
+        System.out.println(files.length);
+        if (files != null)
+            for (File f : files){
+                FileDirectoryCopy copy = new FileDirectoryCopy(f, destination);
+                copy.start();
+                System.out.println("Start.");
+            }
     }
 }
